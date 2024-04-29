@@ -9,12 +9,11 @@ type Props = {
     name: string;
     views: number;
     description: string;
-    thumbnails: string[]
+    thumbnails: { thumbnail: string }[]
 }
 
-import thumbnail from "@/assets/page-1-thumbnail-1.png"
 import pagePhoto from "@/assets/page-1.png"
-export const FollowingPageCard: FC<Props> = ({ id, name, description, views, thumbnails }) => {
+export const FollowingPageCard: FC<Props> = ({ name, description, views, thumbnails }) => {
     return (
         <div className="w-full flex flex-col gap-2 max-w-[40rem]">
             <div className="w-full flex gap-2">
@@ -32,9 +31,9 @@ export const FollowingPageCard: FC<Props> = ({ id, name, description, views, thu
                 </div>
             </div>
             <div className="grid grid-cols-3 gap-2">
-                {thumbnails.map(() => {
+                {thumbnails.map(({ thumbnail }, index) => {
                     return (
-                        <div key={id} className="h-72 w-full bg-gray-100">
+                        <div key={index} className="h-72 w-full bg-gray-100">
                             <img src={thumbnail} alt="thumbnail" className="object-cover h-72 w-full" />
                         </div>
                     )

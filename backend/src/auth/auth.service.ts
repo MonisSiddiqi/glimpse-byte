@@ -53,7 +53,7 @@ export class AuthService {
         email,
         OR: [
           {
-            role: 'ADMIN',
+            role: "CONTENT_CREATOR"
           },
           {
             role: 'SUPER_ADMIN',

@@ -14,31 +14,175 @@ datasource db {
 }
 
 model User {
-  id          String       @id @default(uuid()) @db.VarChar(36)
-  tenantId    String?      @db.VarChar(36)
-  email       String       @unique @db.VarChar(256)
-  password    String       @db.VarChar(256)
-  role        Role         @default(USER)
-  isActive    Boolean      @default(true)
-  updatedAt   DateTime     @updatedAt
-  createdAt   DateTime     @default(now())
-  UserProfile UserProfile?
+  id           String         @id @default(uuid()) @db.VarChar(36)
+  email        String         @unique @db.VarChar(256)
+  role         Role           @default(USER)
+  password     String         @db.VarChar(256)
+  isActive     Boolean        @default(true)
+  updatedAt    DateTime       @updatedAt
+  createdAt    DateTime       @default(now())
+  VideoLike    VideoLike[]
+  Follower     Follower[]
+  Comment      Comment[]
+  LikedComment LikedComment[]
+  SavedVideo   SavedVideo[]
+  LikedVideo   LikedVideo[]
+  VideoView    VideoView[]
+  Notification Notification[]
+  LoginHistory LoginHistory[]
 }
 
-model UserProfile {
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId       String   @unique @db.VarChar(36)
-  name         String
-  profilePhoto String?
-  mobileNumber String?
-  updatedAt    DateTime @updatedAt
-  createdAt    DateTime @default(now())
+model Page {
+  id          String     @id @default(uuid()) @db.VarChar(36)
+  name        String     @unique
+  image       String?
+  description String?
+  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime   @default(now())
+  Video       Video[]
+  Follower    Follower[]
+}
 
-  @@id([userId])
+model Category {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  name      String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Video {
+  id          String       @id @default(uuid()) @db.VarChar(36)
+  page        Page         @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pageId      String       @db.VarChar(36)
+  file        String
+  title       String
+  description String
+  updatedAt   DateTime     @updatedAt
+  createdAt   DateTime     @default(now())
+  VideoLike   VideoLike[]
+  Comment     Comment[]
+  SavedVideo  SavedVideo[]
+  LikedVideo  LikedVideo[]
+  VideoTag    VideoTag[]
+  VideoView   VideoView[]
+}
+
+model Tag {
+  id        String     @id @default(uuid()) @db.VarChar(36)
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  VideoTag  VideoTag[]
+}
+
+model VideoTag {
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId   String   @db.VarChar(36)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tagId     String   @db.VarChar(36)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@id([videoId, tagId])
+}
+
+model VideoView {
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId   String   @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @db.VarChar(36)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@id([videoId, userId])
+}
+
+model VideoLike {
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId   String   @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @db.VarChar(36)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@id([videoId, userId])
+}
+
+model Follower {
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pageId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@id([userId, pageId])
+}
+
+model Comment {
+  id           String         @id @default(uuid()) @db.VarChar(36)
+  content      String
+  video        Video          @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId      String         @db.VarChar(36)
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId       String         @db.VarChar(36)
+  updatedAt    DateTime       @updatedAt
+  createdAt    DateTime       @default(now())
+  LikedComment LikedComment[]
+}
+
+model LikedComment {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @db.VarChar(36)
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  commentId String   @db.VarChar(36)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@id([userId, commentId])
+}
+
+model SavedVideo {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @db.VarChar(36)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId   String   @db.VarChar(36)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@id([userId, videoId])
+}
+
+model LikedVideo {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @db.VarChar(36)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  videoId   String   @db.VarChar(36)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@id([userId, videoId])
+}
+
+model Notification {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @db.VarChar(36)
+  isRead    Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId    String   @db.VarChar(36)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 enum Role {
-  USER        @map("USER")
-  ADMIN       @map("ADMIN")
-  SUPER_ADMIN @map("SUPER_ADMIN")
+  USER            @map("USER")
+  CONTENT_CREATOR @map("CONTENT_CREATOR")
+  SUPER_ADMIN     @map("SUPER_ADMIN")
 }

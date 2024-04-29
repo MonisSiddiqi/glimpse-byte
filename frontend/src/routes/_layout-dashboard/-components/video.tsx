@@ -7,8 +7,14 @@ import PageImage from "@/assets/page-image.png"
 import { Button } from "@/components/ui/button"
 import ReportSpamVideo from "@/assets/report-spam.mp4"
 import { VideoOptionsMenu } from "./video-options"
+import { useState } from "react"
 
 export const Video = () => {
+    const [option, setOption] = useState<string | null>(null)
+
+    const handleSetOption = (value: string | null) => {
+        setOption(value)
+    }
     return (
         <div className="custom-height flex justify-center p-2.5 snap-start">
             <div className="h-full flex flex-col shrink-0">
@@ -33,11 +39,16 @@ export const Video = () => {
                         Follow
                     </Button>
                 </div>
-                <div className="flex justify-center mt-2 gap-2 custom-height-reel">
-                    <div className="flex justify-center aspect-reel">
-                        <video src={ReportSpamVideo} className="size-full object-contain" autoPlay muted loop />
-                        <VideoOptionsMenu />
+                <div className="flex mt-2 gap-2 custom-height-reel duration-300">
+                    <div className="flex aspect-reel relative">
+                        <video src={ReportSpamVideo} className="size-full object-contain bg-gray-900" autoPlay muted loop />
+                        <div className={`${option !== null && "absolute right-2 bottom-2"} h-full mt-auto`}>
+                            <VideoOptionsMenu option={option} setOption={handleSetOption} />
+                        </div>
                     </div>
+
+                    <div className={`p-4 custom-height-reel aspect-reel bg-white  ${!option && "hidden"} `}> Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit iure molestiae enim nesciunt quidem fugiat, amet consequuntur dignissimos minus architecto tempore id voluptatem repellendus eum, veritatis placeat ipsum! Vel explicabo sit, mollitia in dolorum expedita tenetur sint maxime ut nostrum odio quos dolore modi dolores enim assumenda deleniti ad blanditiis commodi ipsam neque. Vel suscipit omnis doloribus excepturi deserunt, eaque modi consequatur porro ipsa voluptatem optio ea minus dolorum fuga. At cumque perferendis optio iste temporibus. Tenetur praesentium, asperiores voluptas illum vitae nesciunt facere in possimus, minus nam consectetur enim blanditiis dolorum facilis reiciendis, sunt placeat repellat. Molestiae, recusandae accusantium!</div>
+
                 </div>
             </div>
         </div>

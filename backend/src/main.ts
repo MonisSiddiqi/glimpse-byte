@@ -7,7 +7,7 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import helmet from 'helmet';
-import compression from 'compression';
+import * as compression from 'compression';
 
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
 import { AppModule } from './app.module';

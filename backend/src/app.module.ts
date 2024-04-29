@@ -10,6 +10,7 @@ import { UploadsController } from './uploads.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import configuration from './config/configuration';
 import { AuthModule } from './auth/auth.module';
+import { PageModule } from './page/page.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AuthModule } from './auth/auth.module';
     ),
     PrismaModule,
     AuthModule,
+    PageModule,
   ],
   controllers: [UploadsController],
   providers: [
